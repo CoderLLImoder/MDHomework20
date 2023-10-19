@@ -8,10 +8,22 @@ func getData(urlRequest: URL?, completion: @escaping ((String) -> Void)) {
             completion("code:\((response as? HTTPURLResponse)?.statusCode), \(error)")
         } else if let response = response as? HTTPURLResponse, response.statusCode == 200 {
             guard let data = data else { return }
-            print(data)
             do {
                 var cards = try JSONDecoder().decode(Cards.self, from: data)
-                completion(cards.cards[0].name)
+                var result = ""
+                cards.cards.forEach {
+                    result += """
+                    
+                     Имя карты: \($0.name)
+                     Затраты маны: \($0.manaCost)
+                     СМС: \($0.cmc)
+                     Тип: \($0.type)
+                     Редкость: \($0.rarity)
+                     Набор: \($0.set)
+                    _________________________
+                    """
+                }
+                completion(result)
             }
             catch {
                 
